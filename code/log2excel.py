@@ -86,7 +86,7 @@ cell_format = workbook.add_format()
 cell_format.set_align('left')
 cell_format.set_align('top')
 bold = workbook.add_format({'bold': True})
-
+# Another comment 
 # Row columns sizes
 worksheet.set_column('A:A', 32)
 worksheet.set_column('B:F', 15)
