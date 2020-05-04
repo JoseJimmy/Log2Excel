@@ -1,7 +1,9 @@
 import tkinter,xlsxwriter
 from tkinter import filedialog,messagebox
 import pandas as pd
+
 ########################################################### Get Filename from user
+
 tkinter.Tk().withdraw()
 LogFilename = filedialog.askopenfilename(title = "Select log file from PTAF ",filetypes = (("txt files","*.txt"),("all files","*.*")))
 ExcelFilename = LogFilename.replace('.txt','_report.xlsx')
@@ -62,4 +64,6 @@ header = ['Datetime','AimName','MacroName','StepNo','MacroStepNo','StepType','Ou
 x= pd.DataFrame(FailsInAim,columns = header)
 x['Datetime'] = pd.to_datetime(x['Datetime'])
 x.to_csv('fails.csv',index = False)
+
+
 
