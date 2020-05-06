@@ -10,8 +10,9 @@ LogFilename = filedialog.askopenfilename(title = "Select log file from PTAF ",fi
 ExcelFilename = LogFilename.replace('.txt','_report.xlsx')
 
 ########################################################### Initialise Variables
-MacroName,StepType,StepNo ,Macro= '--','Main',' ',False
+MacroName,StepType,StepNo ,Macro= '--','Main','NotFound',False
 MacroStepNo = '-'
+LogAppended = False
 FailsInAim = []
 ########################################################### Read File in list logfile
 
@@ -21,6 +22,7 @@ with open(LogFilename) as f:
 ########################################################### Iterate through log and make failure summary
 for line in logfile:
     line=line.rstrip('\n')
+
     if ('Log started at' in line):
         date = line.split(' ')[-2]
 
@@ -29,6 +31,11 @@ for line in logfile:
 
     if ('---- Step:' in line):
         temp = line.split('----')[1].strip()
+        timestamp = line.split(' ')[0]
+
+        if((LogAppended == False) and (StepNo !='NotFound')): # to add steps which does not have any variables to check / comments
+            FailsInAim.append([date + ' ' + timestamp, AimName, MacroName, StepNo, MacroStepNo, StepType, '--', '--'])
+        LogAppended = False
         if (StepType == 'Main'):
             StepNo = temp
         else:
@@ -58,8 +65,8 @@ for line in logfile:
         comment = line.split('**ERROR')[1].strip()
 
     if (('FAIL' in line) or ('PASS' in line) or ('ERROR' in line)):
-        timestamp = line.split(' ')[0]
         FailsInAim.append([date+' '+timestamp,AimName,MacroName,StepNo,MacroStepNo,StepType,Outcome,comment])
+        LogAppended = True
 
 header = ['Datetime','AimName','MacroName','StepNo','MacroStepNo','StepType','Outcome','comment']
 x= pd.DataFrame(FailsInAim,columns = header)
